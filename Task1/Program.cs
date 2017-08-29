@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 
 namespace Task1
 {
@@ -27,7 +26,7 @@ namespace Task1
                 var res1 = MakeVariations(s1);
 
                 foreach (string s2 in res1)
-                    if (Array.IndexOf(result, s[i] + s2) != -1)
+                    if (Array.IndexOf(result, s[i] + s2) == -1)
                         result[k++] = s[i] + s2;
             }
 
@@ -51,26 +50,27 @@ namespace Task1
         static void Main(string[] args)
         {
             string input;
-
-            using (var fs = new FileStream("INPUT.TXT",FileMode.Open))
             {
-                using (var sr = new StreamReader(fs,Encoding.Default))
-                {
-                    input = sr.ReadToEnd();
-                }
+                var fs1 = new FileStream("INPUT.TXT", FileMode.OpenOrCreate);
+                var sr = new StreamReader(fs1);
+                input = sr.ReadToEnd();
+                sr.Close();
+                fs1.Close();
             }
             //input = input.Replace("\n", "").Replace("\r", "").Replace(" ", "");
 
-            string[] ouput = MakeVariations(input);
-            using (var fs = new FileStream("OUTPUT.TXT", FileMode.Create))
+            string[] outputArray = MakeVariations(input);
+            string output = string.Empty;
+            foreach (string s in outputArray)
+                output = output + s.Trim() + Environment.NewLine;
+            output = output.Trim();
+
             {
-                using (var sw = new StreamWriter(fs, Encoding.Default))
-                {
-                    foreach (string s in ouput)
-                    {
-                        sw.WriteLine(s);
-                    }
-                }
+                var fs2 = new FileStream("OUTPUT.TXT", FileMode.Create);
+                var sw = new StreamWriter(fs2);
+                sw.Write(output);
+                sw.Close();
+                fs2.Close();
             }
         }
     }
