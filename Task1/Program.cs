@@ -31,6 +31,20 @@ namespace Task1
                         result[k++] = s[i] + s2;
             }
 
+            {
+                int size = 0;
+                foreach (string s1 in result)
+                    if (!string.IsNullOrEmpty(s1))
+                        size++;
+                var temp = new string[size];
+
+                int i = 0;
+                foreach (var s1 in result)
+                    if (!string.IsNullOrEmpty(s1))
+                        temp[i++] = s1;
+                result = temp;
+            }
+
             return result;
         }
 
@@ -47,8 +61,17 @@ namespace Task1
             }
             //input = input.Replace("\n", "").Replace("\r", "").Replace(" ", "");
 
-
-
+            string[] ouput = MakeVariations(input);
+            using (var fs = new FileStream("OUTPUT.TXT", FileMode.Create))
+            {
+                using (var sw = new StreamWriter(fs, Encoding.Default))
+                {
+                    foreach (string s in ouput)
+                    {
+                        sw.WriteLine(s);
+                    }
+                }
+            }
         }
     }
 }
