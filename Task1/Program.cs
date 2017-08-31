@@ -140,8 +140,8 @@ namespace Task1
 
             string output = string.Empty;
             {
-                var outputArray = MakeVariations(input);
                 //var outputArray = RemoveDuplicates(DumbMakeVariations(input));
+                var outputArray = MakeVariations(input);
                 for (int i = 0; i < outputArray.Length && !string.IsNullOrEmpty(outputArray[i]); i++)
                         output = output + outputArray[i] + Environment.NewLine;
             }
