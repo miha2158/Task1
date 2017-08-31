@@ -7,7 +7,12 @@ namespace Task1
     {
         static int find(string s)
         {
-            string r = string.Empty;
+            string r;
+            return find(s, out r);
+        }
+        static int find(string s, out string r)
+        {
+            r = string.Empty;
             foreach (char c in s)
                 if (!r.Contains(c.ToString()))
                     r = r + c;
@@ -30,6 +35,18 @@ namespace Task1
         {
             if (s.Length <= 1)
                 return new[] { s };
+            {
+                string r;
+                find(s, out r);
+                if (s.Length == 2)
+                    if (r.Length == 2)
+                        return new[] { s, s[1].ToString() + s[0] };
+                    else
+                        return new[] { s };
+
+                if (r == s)
+                    return DumbMakeVariations(s);
+            }
             
             var result = new string[find(s)];
             for (int i = 0,k = 0; i < s.Length; i++)
@@ -123,8 +140,8 @@ namespace Task1
 
             string output = string.Empty;
             {
-                //var outputArray = MakeVariations(input);
-                var outputArray = RemoveDuplicates(DumbMakeVariations(input));
+                var outputArray = MakeVariations(input);
+                //var outputArray = RemoveDuplicates(DumbMakeVariations(input));
                 for (int i = 0; i < outputArray.Length && !string.IsNullOrEmpty(outputArray[i]); i++)
                         output = output + outputArray[i] + Environment.NewLine;
             }
