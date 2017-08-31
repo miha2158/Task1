@@ -11,7 +11,10 @@ namespace Task1
             foreach (char c in s)
                 if (!r.Contains(c.ToString()))
                     r = r + c;
-            return factorial(s.Length) / factorial(s.Length - r.Length) + 1;
+
+            if (s.Length == r.Length)
+                return factorial(s.Length);
+            return factorial(s.Length) / (factorial(s.Length - r.Length) * 1);
         }
         static int factorial(int num)
         {
@@ -82,7 +85,7 @@ namespace Task1
                         s1 = s1 + s[j];
 
 
-                var res1 = MakeVariations(s1);
+                var res1 = DumbMakeVariations(s1);
                 foreach (string str in res1)
                     result[k++] = s[i] + str;
             }
