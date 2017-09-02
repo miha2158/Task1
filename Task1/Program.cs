@@ -52,11 +52,11 @@ namespace Task1
             
             var result = new StringBuilder[find(s)];
             for (int i = 0; i < result.Length; i++)
-                result[i] = new StringBuilder(string.Empty);
+                result[i] = new StringBuilder(0);
 
             for (int i = 0,k = 0; i < s.Length; i++)
             {
-                var s1 = new StringBuilder(string.Empty);
+                var s1 = new StringBuilder(0);
                 for (int j = 0; j < s.Length; j++)
                     if(j != i)
                         s1.Append(s[j]);
@@ -81,11 +81,10 @@ namespace Task1
                     {
                         if (result[j].Equals(temp))
                             break;
-                        if (result[j].Length == 0)
-                        {
-                            result[k++] = temp;
-                            break;
-                        }
+                        if (result[j].Length != 0)
+                            continue;
+                        result[k++] = temp;
+                        break;
                     }
                 }
             }
@@ -99,11 +98,11 @@ namespace Task1
 
             var result = new StringBuilder[factorial(s.Length)];
             for (int i = 0; i < result.Length; i++)
-                result[i] = new StringBuilder(string.Empty);
+                result[i] = new StringBuilder(0);
 
             for (int i = 0, k = 0; i < s.Length; i++)
             {
-                StringBuilder s1 = new StringBuilder(string.Empty);
+                StringBuilder s1 = new StringBuilder(0);
                 for (int j = 0; j < s.Length; j++)
                     if (j != i)
                         s1.Append(s[j]);
@@ -122,7 +121,7 @@ namespace Task1
         {
             var result = new StringBuilder[find(s[0])];
             for (int i = 0; i < result.Length; i++)
-                result[i] = new StringBuilder(string.Empty);
+                result[i] = new StringBuilder(0);
 
             for (int i = 0,k = 0; i < s.Length; i++)
             {
@@ -139,6 +138,38 @@ namespace Task1
             return result;
         }
 
+        static string[] AnotherAlgorithm(StringBuilder s)
+        {
+            /*var result = new StringBuilder[find(s)];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = new StringBuilder(0);*/
+
+            var result = new string[find(s)];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = string.Empty;
+
+            step(s.ToString(), result, 0, 0);
+
+            return result;
+        }
+        static void step(string s, string[] result, int indexS, int indexRes)
+        {
+            if (s.Length == 1)
+            {
+                result[indexRes] = s[indexS].ToString();
+                return;
+            }
+
+            for (int i = indexS + 1; i < s.Length; i++)
+            {
+                step(s, result, i, indexRes);
+                
+                for (int j = indexRes; j < result.Length && result[j].Length != 0; j++, indexRes++)
+                    result[j] = s[indexS] + result[j];
+            }
+        }
+
+
 
         static void Main(string[] args)
         {
@@ -153,7 +184,6 @@ namespace Task1
 
             string output = string.Empty;
             {
-                //var outputArray = RemoveDuplicates(DumbMakeVariations(input));
                 var outputArray = MakeVariations(input);
                 for (int i = 0; i < outputArray.Length && outputArray[i].Length != 0; i++)
                         output = output + outputArray[i] + Environment.NewLine;
