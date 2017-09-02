@@ -148,24 +148,29 @@ namespace Task1
             for (int i = 0; i < result.Length; i++)
                 result[i] = string.Empty;
 
-            step(s.ToString(), result, 0, 0);
+            step(s.ToString(), result, 0, 0, 0);
 
             return result;
         }
-        static void step(string s, string[] result, int indexS, int indexRes)
+        static void step(string s, string[] result, int indexS, int indexNS, int indexRes)
         {
-            if (s.Length == 1)
+            if (s.Length - indexS == 1 || Math.Abs(indexNS - indexS) == 1)
             {
                 result[indexRes] = s[indexS].ToString();
                 return;
             }
 
-            for (int i = indexS + 1; i < s.Length; i++)
+            for (int i = indexS; i < s.Length; i++)
             {
-                step(s, result, i, indexRes);
-                
-                for (int j = indexRes; j < result.Length && result[j].Length != 0; j++, indexRes++)
-                    result[j] = s[indexS] + result[j];
+                step(s, result, indexS + 1, i, indexRes);
+
+                if (i == indexNS)
+                    continue;
+
+                int j = indexRes;
+                for (; j < result.Length && result[j].Length != 0; j++)
+                    result[j] = s[i] + result[j];
+                result[j] = s[indexNS] + result[j];
             }
         }
 
@@ -184,7 +189,7 @@ namespace Task1
 
             string output = string.Empty;
             {
-                var outputArray = MakeVariations(input);
+                var outputArray = AnotherAlgorithm(input);
                 for (int i = 0; i < outputArray.Length && outputArray[i].Length != 0; i++)
                         output = output + outputArray[i] + Environment.NewLine;
             }
