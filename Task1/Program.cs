@@ -33,6 +33,7 @@ namespace Task1
                     return num * factorial(num - 1);
             }
         }
+
         static StringBuilder[] MakeVariations(StringBuilder s)
         {
             if (s.Length <= 1)
@@ -90,7 +91,6 @@ namespace Task1
             }
             return result;
         }
-
         static StringBuilder[] DumbMakeVariations(StringBuilder s)
         {
             if (s.Length <= 1)
@@ -117,14 +117,14 @@ namespace Task1
             }
             return result;
         }
-        static StringBuilder[] RemoveDuplicates(StringBuilder[] s)
+
+        static string[] RemoveDuplicates(string[] s)
         {
-            var result = new StringBuilder[find(s[0])];
+            var result = new string[s.Length];
             for (int i = 0; i < result.Length; i++)
-                result[i] = new StringBuilder(0);
+                result[i] = string.Empty;
 
             for (int i = 0,k = 0; i < s.Length; i++)
-            {
                 for (int j = 0; j < result.Length; j++)
                 {
                     if (s[i] == result[j])
@@ -134,43 +134,38 @@ namespace Task1
                     result[k++] = s[i];
                     break;
                 }
-            }
             return result;
         }
 
         static string[] AnotherAlgorithm(StringBuilder s)
         {
-            /*var result = new StringBuilder[find(s)];
-            for (int i = 0; i < result.Length; i++)
-                result[i] = new StringBuilder(0);*/
-
-            var result = new string[find(s)];
+            var result = new string[factorial(s.Length)];
             for (int i = 0; i < result.Length; i++)
                 result[i] = string.Empty;
 
-            step(s.ToString(), result, 0, 0, 0);
+            step(s.ToString(), result, 0);
 
             return result;
         }
-        static void step(string s, string[] result, int indexS, int indexNS, int indexRes)
+        static void step(string s, string[] result, int indexRes)
         {
-            if (s.Length - indexS == 1 || Math.Abs(indexNS - indexS) == 1)
+            if (s.Length == 1)
             {
-                result[indexRes] = s[indexS].ToString();
+                result[indexRes] = s;
                 return;
             }
 
-            for (int i = indexS; i < s.Length; i++)
+            for (int i = 0; i < s.Length; i++)
             {
-                step(s, result, indexS + 1, i, indexRes);
+                string si = string.Empty;
+                for (int j = 0; j < s.Length; j++)
+                    if (j != i)
+                        si = si + s[j];
 
-                if (i == indexNS)
-                    continue;
-
-                int j = indexRes;
-                for (; j < result.Length && result[j].Length != 0; j++)
+                step(si, result, indexRes);
+                
+                for (int j = indexRes; j < result.Length && result[j] != string.Empty; j++, indexRes++)
                     result[j] = s[i] + result[j];
-                result[j] = s[indexNS] + result[j];
             }
         }
 
@@ -189,8 +184,8 @@ namespace Task1
 
             string output = string.Empty;
             {
-                var outputArray = AnotherAlgorithm(input);
-                for (int i = 0; i < outputArray.Length && outputArray[i].Length != 0; i++)
+                var outputArray = RemoveDuplicates(AnotherAlgorithm(input));
+                for (int i = 0; i < outputArray.Length && outputArray[i] != string.Empty; i++)
                         output = output + outputArray[i] + Environment.NewLine;
             }
 
