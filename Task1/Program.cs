@@ -1,21 +1,23 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace Task1
 {
     class Program
     {
-        static int find(string s)
+        static int find(StringBuilder s)
         {
-            string r;
+            StringBuilder r;
             return find(s, out r);
         }
-        static int find(string s, out string r)
+        static int find(StringBuilder s, out StringBuilder r)
         {
-            r = string.Empty;
-            foreach (char c in s)
-                if (!r.Contains(c.ToString()))
-                    r = r + c;
+            string rr = string.Empty;
+            for (int i = 0; i < s.Length; i++)
+                if (!rr.Contains(s[i].ToString()))
+                    rr = rr + s[i];
+            r = new StringBuilder(rr);
 
             if (s.Length == r.Length)
                 return factorial(s.Length);
@@ -31,34 +33,37 @@ namespace Task1
                     return num * factorial(num - 1);
             }
         }
-        static string[] MakeVariations(string s)
+        static StringBuilder[] MakeVariations(StringBuilder s)
         {
             if (s.Length <= 1)
                 return new[] { s };
             {
-                string r;
+                StringBuilder r;
                 find(s, out r);
                 if (s.Length == 2)
                     if (r.Length == 2)
-                        return new[] { s, s[1].ToString() + s[0] };
+                        return new[] { s, new StringBuilder(s[1].ToString() + s[0]) };
                     else
                         return new[] { s };
 
-                if (r == s)
+                if (r.Equals(s))
                     return DumbMakeVariations(s);
             }
             
-            var result = new string[find(s)];
+            var result = new StringBuilder[find(s)];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = new StringBuilder(string.Empty);
+
             for (int i = 0,k = 0; i < s.Length; i++)
             {
-                string s1 = string.Empty;
+                var s1 = new StringBuilder(string.Empty);
                 for (int j = 0; j < s.Length; j++)
                     if(j != i)
-                        s1 = s1 + s[j];
+                        s1.Append(s[j]);
 
                 bool skip = false;
-                for (int j = 0; j < result.Length && !string.IsNullOrEmpty(result[j]) && !skip; j++)
-                    if (s[i] + s1 == result[j])
+                for (int j = 0; j < result.Length && result[j].Length != 0 && !skip; j++)
+                    if ((s[i] + s1.ToString()).Equals(result[j].ToString()))
                         skip = true;
                 if(skip)
                     continue;
@@ -66,17 +71,17 @@ namespace Task1
                 var res1 = MakeVariations(s1);
                 for (int index = 0; index < res1.Length; index++)
                 {
-                    string temp = string.Empty;
-                    if (!string.IsNullOrEmpty(res1[index]))
-                        temp = s[i] + res1[index];
+                    var temp = new StringBuilder(s[i].ToString());
+                    if (res1[index].Length != 0)
+                        temp.Append(res1[index]);
                     else
                         break;
 
                     for (int j = 0; j < result.Length; j++)
                     {
-                        if (result[j] == temp)
+                        if (result[j].Equals(temp))
                             break;
-                        if (string.IsNullOrEmpty(result[j]))
+                        if (result[j].Length == 0)
                         {
                             result[k++] = temp;
                             break;
@@ -87,37 +92,45 @@ namespace Task1
             return result;
         }
 
-        static string[] DumbMakeVariations(string s)
+        static StringBuilder[] DumbMakeVariations(StringBuilder s)
         {
             if (s.Length <= 1)
                 return new[] { s };
 
-            var result = new string[factorial(s.Length)];
+            var result = new StringBuilder[factorial(s.Length)];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = new StringBuilder(string.Empty);
 
             for (int i = 0, k = 0; i < s.Length; i++)
             {
-                string s1 = string.Empty;
+                StringBuilder s1 = new StringBuilder(string.Empty);
                 for (int j = 0; j < s.Length; j++)
                     if (j != i)
-                        s1 = s1 + s[j];
+                        s1.Append(s[j]);
 
 
                 var res1 = DumbMakeVariations(s1);
-                foreach (string str in res1)
-                    result[k++] = s[i] + str;
+                foreach (StringBuilder str in res1)
+                {
+                    result[k].Append(s[i]);
+                    result[k++].Append(str);
+                }
             }
             return result;
         }
-        static string[] RemoveDuplicates(string[] s)
+        static StringBuilder[] RemoveDuplicates(StringBuilder[] s)
         {
-            var result = new string[find(s[0])];
+            var result = new StringBuilder[find(s[0])];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = new StringBuilder(string.Empty);
+
             for (int i = 0,k = 0; i < s.Length; i++)
             {
                 for (int j = 0; j < result.Length; j++)
                 {
                     if (s[i] == result[j])
                         break;
-                    if (!string.IsNullOrEmpty(result[j]))
+                    if (result[j].Length != 0)
                         continue;
                     result[k++] = s[i];
                     break;
@@ -129,12 +142,12 @@ namespace Task1
 
         static void Main(string[] args)
         {
-            string input;
+            StringBuilder input;
             using (var fs = new FileStream("INPUT.TXT", FileMode.Open))
             {
                 using (var sr = new StreamReader(fs))
                 {
-                    input = sr.ReadLine();
+                    input = new StringBuilder(sr.ReadLine());
                 }
             }
 
@@ -142,7 +155,7 @@ namespace Task1
             {
                 //var outputArray = RemoveDuplicates(DumbMakeVariations(input));
                 var outputArray = MakeVariations(input);
-                for (int i = 0; i < outputArray.Length && !string.IsNullOrEmpty(outputArray[i]); i++)
+                for (int i = 0; i < outputArray.Length && outputArray[i].Length != 0; i++)
                         output = output + outputArray[i] + Environment.NewLine;
             }
 
