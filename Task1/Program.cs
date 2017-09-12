@@ -27,7 +27,8 @@ namespace Task1
         {
             switch (num)
             {
-                case 0: case 1:
+                case 0:
+                case 1:
                     return 1;
                 default:
                     return num * factorial(num - 1);
@@ -50,23 +51,23 @@ namespace Task1
                 if (r.Equals(s))
                     return DumbMakeVariations(s);
             }
-            
+
             var result = new StringBuilder[find(s)];
             for (int i = 0; i < result.Length; i++)
                 result[i] = new StringBuilder(0);
 
-            for (int i = 0,k = 0; i < s.Length; i++)
+            for (int i = 0, k = 0; i < s.Length; i++)
             {
                 var s1 = new StringBuilder(0);
                 for (int j = 0; j < s.Length; j++)
-                    if(j != i)
+                    if (j != i)
                         s1.Append(s[j]);
 
                 bool skip = false;
                 for (int j = 0; j < result.Length && result[j].Length != 0 && !skip; j++)
                     if ((s[i] + s1.ToString()).Equals(result[j].ToString()))
                         skip = true;
-                if(skip)
+                if (skip)
                     continue;
 
                 var res1 = MakeVariations(s1);
@@ -120,11 +121,11 @@ namespace Task1
 
         static string[] RemoveDuplicates(string[] s)
         {
-            var result = new string[s.Length];
+            var result = new string[find(new StringBuilder(s[0]))];
             for (int i = 0; i < result.Length; i++)
                 result[i] = string.Empty;
 
-            for (int i = 0,k = 0; i < s.Length; i++)
+            for (int i = 0, k = 0; i < s.Length; i++)
                 for (int j = 0; j < result.Length; j++)
                 {
                     if (s[i] == result[j])
@@ -139,7 +140,7 @@ namespace Task1
 
         static string[] AnotherAlgorithm(StringBuilder s)
         {
-            var result = new string[factorial(s.Length)];
+            var result = new string[factorial(s.Length) + 1];
             for (int i = 0; i < result.Length; i++)
                 result[i] = string.Empty;
 
@@ -163,7 +164,7 @@ namespace Task1
                         si = si + s[j];
 
                 step(si, result, indexRes);
-                
+
                 for (int j = indexRes; j < result.Length && result[j] != string.Empty; j++, indexRes++)
                     result[j] = s[i] + result[j];
             }
@@ -175,28 +176,17 @@ namespace Task1
         {
             StringBuilder input;
             using (var fs = new FileStream("INPUT.TXT", FileMode.Open))
-            {
                 using (var sr = new StreamReader(fs))
-                {
                     input = new StringBuilder(sr.ReadLine());
-                }
-            }
-
-            string output = string.Empty;
-            {
-                var outputArray = RemoveDuplicates(AnotherAlgorithm(input));
-                for (int i = 0; i < outputArray.Length && outputArray[i] != string.Empty; i++)
-                        output = output + outputArray[i] + Environment.NewLine;
-            }
-
+            
             using (var fs = new FileStream("OUTPUT.TXT", FileMode.Create))
-            {
                 using (var sw = new StreamWriter(fs))
                 {
-                    for (int i = 0; i < output.Length - 1; i++)
-                        sw.Write(output[i]);
+                    var outputArray = RemoveDuplicates(AnotherAlgorithm(input));
+                    sw.Write(outputArray[0]);
+                    for (int i = 1; i < outputArray.Length && outputArray[i] != string.Empty; i++)
+                        sw.Write(Environment.NewLine + outputArray[i]);
                 }
-            }
         }
     }
 }
